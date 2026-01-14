@@ -19,12 +19,27 @@ document.addEventListener("DOMContentLoaded", () => {
         activityCard.className = "activity-card";
 
         const spotsLeft = details.max_participants - details.participants.length;
+        
+        // Create participants HTML
+        let participantsHtml;
+        if (details.participants.length > 0) {
+          const participantItems = details.participants
+            .map(email => `<li>${email}</li>`)
+            .join('');
+          participantsHtml = `<ul class="participants-list">${participantItems}</ul>`;
+        } else {
+          participantsHtml = '<p class="no-participants">No participants yet</p>';
+        }
 
         activityCard.innerHTML = `
           <h4>${name}</h4>
           <p>${details.description}</p>
           <p><strong>Schedule:</strong> ${details.schedule}</p>
           <p><strong>Availability:</strong> ${spotsLeft} spots left</p>
+          <div class="participants-section">
+            <h5>Participants:</h5>
+            ${participantsHtml}
+          </div>
         `;
 
         activitiesList.appendChild(activityCard);
@@ -68,6 +83,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       messageDiv.classList.remove("hidden");
+
+      // Refresh activities to show updated participants
+      fetchActivities();
 
       // Hide message after 5 seconds
       setTimeout(() => {
